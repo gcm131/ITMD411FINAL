@@ -202,18 +202,35 @@ public class Tickets extends JFrame implements ActionListener {
 
 		else if (e.getSource() == mnuItemDelete) {
 		    if (chkIfAdmin) {
-		        String idStr = JOptionPane.showInputDialog(null, "Enter Ticket ID to delete");
-		        try {
-		            dao.deleteRecord(Integer.parseInt(idStr));
-		            JOptionPane.showMessageDialog(null, "Ticket deleted successfully!");
-		            refreshTicketsTable();
-		        } catch (Exception ex) {
-		            JOptionPane.showMessageDialog(null, "Error deleting ticket: " + ex.getMessage());
+		        String idStr = JOptionPane.showInputDialog(this, "Enter Ticket ID to delete");
+		        if (idStr != null && !idStr.trim().isEmpty()) {
+		            int ticketId = Integer.parseInt(idStr);
+
+		            // confirmation dialog showing the ticket number
+		            int confirm = JOptionPane.showConfirmDialog(
+		                this,
+		                "Are you sure you want to delete Ticket #" + ticketId + "?",
+		                "Confirm Delete",
+		                JOptionPane.YES_NO_OPTION
+		            );
+
+		            if (confirm == JOptionPane.YES_OPTION) {
+		                try {
+		                    dao.deleteRecord(ticketId);
+		                    JOptionPane.showMessageDialog(this, "Ticket #" + ticketId + " deleted successfully!");
+		                    refreshTicketsTable(); // refresh view after delete
+		                } catch (Exception ex) {
+		                    JOptionPane.showMessageDialog(this, "Error deleting ticket: " + ex.getMessage());
+		                }
+		            } else {
+		                JOptionPane.showMessageDialog(this, "Delete cancelled for Ticket #" + ticketId);
+		            }
 		        }
 		    } else {
-		        JOptionPane.showMessageDialog(null, "Access denied. Admins only.");
+		        JOptionPane.showMessageDialog(this, "Access denied. Admins only.");
 		    }
 		}
+
 		
 		else if (e.getSource() == mnuItemCloseTicket) {
 			if (chkIfAdmin) {
